@@ -6,6 +6,7 @@ import { getGames } from '../services/games'
 import SwitchPages from './SwitchPages';
 import SkeletonLoading from './SkeletonLoading';
 import Drop from './Drop'
+import GameResume from './GameResume';
 
 const BigBox = styled.div`
     margin: 50px auto;
@@ -41,6 +42,7 @@ const SwitchBorder = styled.div`
 
 function Container() {
    const [games, setGames] = useState({})
+   const [selectedGame,setSelectedGame] = useState(0)
    const [page, setPage] = useState(1)
    const [loading, setLoading] = useState(false)
    const [searchTerm, setSearchTerm] = useState("");
@@ -61,6 +63,11 @@ function Container() {
        fetchGames()
    },[page, searchTerm, selectedPlatform])
 
+   if(selectedGame){
+       return <GameResume selectedGame={selectedGame}/>
+   }
+
+
   return (
     <>
       <BigBox>
@@ -74,7 +81,7 @@ function Container() {
               loading ?
               <SkeletonLoading itemSize={10} />                                          
               :
-              games.results && games.results.map((game, index) => <Game key={game.id} item={game} isLast={games.results.length - 1 === index} />)
+              games.results && games.results.map((game, index) => <Game key={game.id} item={game} setSelectedGame={setSelectedGame} isLast={games.results.length - 1 === index} />)
           }
       </BigBox>
       <SwitchBorder>

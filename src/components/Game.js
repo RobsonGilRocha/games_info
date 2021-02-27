@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components"
 import dayjs from 'dayjs'
-import metacritic from '../images/metacritic.png'
+import MetaCritic from './MetaCritic';
 
 
 const HeaderGame = styled.div`
@@ -47,36 +47,6 @@ const GameRelease = styled.span`
     color: #8E9093;
     font-weight: 600;
 `
-const MetacriticContainer = styled.div`
-    display:flex;
-    margin-top: 18px;
-    align-items: center;
-
-`
-const MetacriticImg = styled.div`
-    background: url(${metacritic});
-    width:30px;
-    height:30px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-
-`
-const MetacriticScore = styled.div`
-    width: 40px;
-    height: 40px;
-    border: 2px solid #6DC849;
-    box-sizing: border-box;
-    border-radius: 10px;
-    font-family: 'Noto Sans';
-    font-size: 22px;
-    color: #6DC849;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 12px;
-`
 const LineContainer = styled.div`
     background-color: ${({ isLast }) => isLast ? 'transparent' : '#ffffff'};
     opacity: 0.1;
@@ -85,11 +55,10 @@ const LineContainer = styled.div`
     height: 0.5px;
 `
 
-function Game({ item, isLast }) {
-    const hasMetacritc = item.metacritic !== null;
-
+function Game({ item, isLast, setSelectedGame }) {
+    
     function gameClick() {
-        console.warn(hasMetacritc)
+        setSelectedGame(item.id)     
     }
 
     return (
@@ -108,10 +77,7 @@ function Game({ item, isLast }) {
                     <GameRelease size={14} >
                         Released date: <GameRelease>{dayjs(item.released).format('MMM DD, YYYY')}</GameRelease>
                     </GameRelease>
-                    {hasMetacritc === true ?<MetacriticContainer>
-                        <MetacriticImg />
-                        <MetacriticScore>{item.metacritic}</MetacriticScore>
-                    </MetacriticContainer> : <div/>}
+                    <MetaCritic item={item}/>
                 </InfoContainer>
             </HeaderGame>
             <LineContainer isLast={isLast}/>
