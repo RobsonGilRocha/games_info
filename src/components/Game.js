@@ -86,9 +86,10 @@ const LineContainer = styled.div`
 `
 
 function Game({ item, isLast }) {
+    const hasMetacritc = item.metacritic !== null;
 
     function gameClick() {
-        console.warn(item)
+        console.warn(hasMetacritc)
     }
 
     return (
@@ -107,14 +108,13 @@ function Game({ item, isLast }) {
                     <GameRelease size={14} >
                         Released date: <GameRelease>{dayjs(item.released).format('MMM DD, YYYY')}</GameRelease>
                     </GameRelease>
-                    <MetacriticContainer>
+                    {hasMetacritc === true ?<MetacriticContainer>
                         <MetacriticImg />
-                        <MetacriticScore>{item.metacritic}
-                        </MetacriticScore>
-                    </MetacriticContainer>
+                        <MetacriticScore>{item.metacritic}</MetacriticScore>
+                    </MetacriticContainer> : <div/>}
                 </InfoContainer>
             </HeaderGame>
-            <LineContainer isLast={isLast} />
+            <LineContainer isLast={isLast}/>
         </>
     )
 }
