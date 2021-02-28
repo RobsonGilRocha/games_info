@@ -109,11 +109,11 @@ const Resume = styled.div`
   color: #FFFFFF;
 `
 const ResumeBox = styled.div`
-  position: relative;
+  display: block;
   width: 456px;
   height: 198px;
-  background-color:red;
-  overflow:${({hidden}) => hidden ? 'hidden' : 'visible'};
+  cursor: pointer;
+  overflow-y: ${({hidden}) => !hidden ? 'hidden' : 'visible'};
 `
 
 
@@ -128,10 +128,6 @@ function GameResume({selectedGame}) {
     }
     fetchGames()
   }, [selectedGame])
-
-  const hendleHidden = ()=>{
-    setShowAbout(true)
-  }
 
   return (
     <BoxResume>
