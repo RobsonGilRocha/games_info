@@ -5,6 +5,7 @@ import BackHome from './BackHome';
 import dayjs from 'dayjs'
 import { mapPlatforms } from '../utils';
 import MetaCritic from './MetaCritic';
+import BoxVideo from './BoxVideo'
 
 const BoxResume = styled.div`
   margin: 50px auto;
@@ -13,7 +14,10 @@ const BoxResume = styled.div`
   width: 1024px;
   border-radius: 50px;
 `
-
+const BoxZ = styled.div`
+  
+  z-index:5;
+`
 const BoxResumeBackImage = styled.div`
   position: absolute;
   top: 0px;
@@ -28,6 +32,7 @@ const BoxResumeBackImage = styled.div`
   border-radius: 50px;
   background: ${({ image }) => `url(${image})`} no-repeat center;
   background-size: cover;
+  z-index:-5;
 `;
 
 const Row = styled.div`
@@ -76,9 +81,45 @@ const AboutText = styled.span`
 const GamePublishers= styled.div`
   margin-right: 5px;
 `
+const Playtime = styled.div`
+  font-family: 'Noto Sans';
+  width: 110px;
+  height: 22px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  color: #FFFFFF;
+`
+const AboutResume = styled.span`
+  
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 33px;
+  color: #FFFFFF;
+`
+const Resume = styled.div`
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 22px;
+  color: #FFFFFF;
+`
+const ResumeBox = styled.div`
+  position: relative;
+  width: 456px;
+  height: 198px;
+  background-color:red;
+  overflow:${({hidden}) => hidden ? 'hidden' : 'visible'};
+`
+
 
 function GameResume({selectedGame}) {
   const [game, setGame] = useState({})
+  const [showAbout , setShowAbout] = useState(false)
 
   useEffect(() => {
     async function fetchGames() {
@@ -88,9 +129,14 @@ function GameResume({selectedGame}) {
     fetchGames()
   }, [selectedGame])
 
+  const hendleHidden = ()=>{
+    setShowAbout(true)
+  }
+
   return (
     <BoxResume>
       <BoxResumeBackImage image={game.background_image} />
+      <BoxZ>
       <BackHome />
       <Row>
         <Title>{game.name}</Title>
@@ -117,13 +163,25 @@ function GameResume({selectedGame}) {
           </GamePublishers>    
           {
             game.publishers && game.publishers.map((publisher, index) => (
-              <GamePublishers key={publisher.id} >
-                <AboutText > {publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>
-              </GamePublishers>
+            <GamePublishers key={publisher.id} >
+                <AboutText > {publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>  
+            </GamePublishers>
             ))
-          }
+          } 
         </PlatformsContainer>
+        <Playtime>{'Playtime: '}{game.playtime}{' h'}</Playtime>
       </Row>
+      <AboutResume>
+              {'About'}
+      </AboutResume>
+      <Row>
+        <ResumeBox onClick={()=> setShowAbout(!showAbout)} hidden={showAbout}>
+          <Resume>{game.description_raw}</Resume>
+        </ResumeBox>
+        <BoxVideo game={game}/>
+      </Row>
+      </BoxZ>
+      
     </BoxResume>
   );
 }

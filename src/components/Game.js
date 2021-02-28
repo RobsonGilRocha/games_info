@@ -87,7 +87,6 @@ const LineContainer = styled.div`
 `
 
 function Game({ item, isLast, setSelectedGame }) {
-    const hasMetacritc = item.metacritic !== null;
 
     function gameClick() {
        setSelectedGame(item.id)
@@ -109,10 +108,10 @@ function Game({ item, isLast, setSelectedGame }) {
                     <GameRelease size={14} >
                         Released date: <GameRelease>{dayjs(item.released).format('MMM DD, YYYY')}</GameRelease>
                     </GameRelease>
-                    {hasMetacritc && <MetacriticContainer>
+                    <MetacriticContainer>
                         <MetacriticImg />
                         <MetacriticScore>{item.metacritic}</MetacriticScore>
-                    </MetacriticContainer>}
+                    </MetacriticContainer>
                 </InfoContainer>
             </HeaderGame>
             <LineContainer isLast={isLast}/>
