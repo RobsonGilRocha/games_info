@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import metacritic from '../images/metacritic.png'
 
 
+
 const HeaderGame = styled.div`
     display: flex;
     align-items: center;
@@ -85,11 +86,11 @@ const LineContainer = styled.div`
     height: 0.5px;
 `
 
-function Game({ item, isLast }) {
+function Game({ item, isLast, setSelectedGame }) {
     const hasMetacritc = item.metacritic !== null;
 
     function gameClick() {
-        console.warn(hasMetacritc)
+       setSelectedGame(item.id)
     }
 
     return (

@@ -52,6 +52,12 @@ function Container() {
         setSearchTerm(event.target.value)
         setPage(1);
     }
+    const scrollToTop= ()=>{
+        window.scroll({
+            top:0,
+            behavior:'smooth'
+        })
+    }
 
    useEffect(() => {
        async function fetchGames() {
@@ -84,7 +90,7 @@ function Container() {
               games.results && games.results.map((game, index) => <Game key={game.id} item={game} setSelectedGame={setSelectedGame} isLast={games.results.length - 1 === index} />)
           }
       </BigBox>
-      <SwitchBorder>
+      <SwitchBorder onClick={()=> scrollToTop()}>
          { games.previous ? <SwitchPages onClick={() => setPage(page - 1)} reverse={true}/> : <div /> }
          { games.next ? <SwitchPages onClick={() => setPage(page + 1)} reverse={false}/> : <div /> }
       </SwitchBorder>

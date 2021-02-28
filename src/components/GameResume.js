@@ -117,8 +117,8 @@ function GameResume({selectedGame}) {
           </GamePublishers>    
           {
             game.publishers && game.publishers.map((publisher, index) => (
-              <GamePublishers>
-                <AboutText key={index}> {publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>
+              <GamePublishers key={publisher.id} >
+                <AboutText > {publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>
               </GamePublishers>
             ))
           }
