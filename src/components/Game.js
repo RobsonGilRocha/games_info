@@ -100,11 +100,11 @@ function Game({ item, isLast }) {
                     <GameTitle>
                         {item.name}
                     </GameTitle>
-                    <GamePlatforms>
+                    {item.platforms && <GamePlatforms>
                         {item.platforms.map((platform, index) => {
                             return `${platform.platform.name}${item.platforms.length - 1 === index ? "." : ", "}`
                         })}
-                    </GamePlatforms>
+                    </GamePlatforms>}
                     <GameRelease size={14} >
                         Released date: <GameRelease>{dayjs(item.released).format('MMM DD, YYYY')}</GameRelease>
                     </GameRelease>
