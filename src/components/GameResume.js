@@ -6,12 +6,16 @@ import dayjs from 'dayjs'
 import { mapPlatforms } from '../utils';
 import MetaCritic from './MetaCritic';
 import BoxVideo from './BoxVideo'
+import LinkStore from './LinkStore'
+import reddit from '../images/reddit.png'
+import ModalGame from './ModalGame';
+import LoaderS from './LoaderS';
 
 const BoxResume = styled.div`
   margin: 50px auto;
   padding: 52px 48px;
-  height: 800px;
   width: 1024px;
+  min-height: 800px;
   border-radius: 50px;
 `
 const BoxZ = styled.div`
@@ -27,8 +31,8 @@ const BoxResumeBackImage = styled.div`
   opacity: 0.15;
   margin: 50px auto;
   padding: 52px 48px;
-  height: 800px;
   width: 1024px;
+  min-height: 800px;
   border-radius: 50px;
   background: ${({ image }) => `url(${image})`} no-repeat center;
   background-size: cover;
@@ -113,72 +117,144 @@ const ResumeBox = styled.div`
   width: 456px;
   height: 198px;
   cursor: pointer;
-  overflow-y: ${({hidden}) => !hidden ? 'hidden' : 'visible'};
+  overflow-y:hidden;
+`
+const StoreWraper = styled.div`
+  width: 456px;
+  height: 280px;
+  display:flex;
+  flex-direction:column;
+  flex-wrap: wrap;
+  margin-top: 30px;
+`
+const DivTeste = styled.div`
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  align-self: flex-end;
+`
+const LinkOfficial = styled.span`
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+  color: white;
+  cursor: pointer;
+  margin-bottom:5px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+`
+
+const RedditIcon = styled.span`
+  background-image:url(${reddit});
+  width: 20px;
+  height: 20px;
+  color:white;
+  background-position: center;
+  background-size: cover;
+  cursor:pointer;
+`
+
+const LinkReddit = styled.span`
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+  color: white;
+  cursor:pointer;
+  margin-left:8px;
 `
 
 
-function GameResume({selectedGame}) {
+function GameResume({selectedGame, setSelectedGame }) {
   const [game, setGame] = useState({})
-  const [showAbout , setShowAbout] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     async function fetchGames() {
+        setLoading(true)
         const response = await getGameById(selectedGame)
         setGame(response.data)
+        setLoading(false)
     }
     fetchGames()
   }, [selectedGame])
 
+
   return (
-    <BoxResume>
-      <BoxResumeBackImage image={game.background_image} />
-      <BoxZ>
-      <BackHome />
-      <Row>
-        <Title>{game.name}</Title>
-        <DateBox>
-          <DateRelese>{dayjs(game.released).format('MMM DD, YYYY')}</DateRelese>
-        </DateBox>
-      </Row>
-      <Row>
-        <PlatformsContainer>
-          { game.parent_platforms && game.parent_platforms.map((parent) => (
-            <PlatformIcon key={parent.platform.id}>
-              { mapPlatforms(parent.platform.slug) }
-            </PlatformIcon>
-          )) }
-        </PlatformsContainer>
-        <MetaCritic item={game}/>
-      </Row>
-      <Row>
-        <PlatformsContainer>
-          <GamePublishers>
-            <AboutText>
-              {'Publishers: '}
-            </AboutText>
-          </GamePublishers>    
-          {
-            game.publishers && game.publishers.map((publisher, index) => (
-            <GamePublishers key={publisher.id} >
-                <AboutText > {publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>  
-            </GamePublishers>
-            ))
-          } 
-        </PlatformsContainer>
-        <Playtime>{'Playtime: '}{game.playtime}{' h'}</Playtime>
-      </Row>
-      <AboutResume>
-              {'About'}
-      </AboutResume>
-      <Row>
-        <ResumeBox onClick={()=> setShowAbout(!showAbout)} hidden={showAbout}>
-          <Resume>{game.description_raw}</Resume>
-        </ResumeBox>
-        <BoxVideo game={game}/>
-      </Row>
-      </BoxZ>
-      
-    </BoxResume>
+    <>
+      {
+        loading ? <LoaderS/>
+        :
+        <BoxResume>
+        <BoxResumeBackImage image={game.background_image} />
+        <BoxZ>
+        <BackHome setSelectedGame={setSelectedGame} />
+        <Row>
+          <Title>{game.name}</Title>
+          {game.released && <DateBox>
+            <DateRelese>{dayjs(game.released).format('MMM DD, YYYY')}</DateRelese>
+          </DateBox>}
+        </Row>
+        <Row>
+          <PlatformsContainer>
+            { game.parent_platforms && game.parent_platforms.map((parent) => (
+              <PlatformIcon key={parent.platform.id}>
+                { mapPlatforms(parent.platform.slug) }
+              </PlatformIcon>
+            )) }
+          </PlatformsContainer>
+          <MetaCritic item={game}/>
+        </Row>
+        <Row>
+          <PlatformsContainer>
+            {game.publishers && game.publishers.length > 0 && (
+              <>
+                <GamePublishers >
+                <AboutText>
+                  {'Publishers: '}
+                </AboutText>
+              </GamePublishers>    
+              {game.publishers.map((publisher, index) => (
+                <GamePublishers key={publisher.id} >
+                  <AboutText>{publisher.name} {game.publishers.length-1 === index ? '' : ', '}</AboutText>  
+                </GamePublishers>
+              ))} 
+              </>
+            )}          
+          </PlatformsContainer>
+          {game.playtime !== 0 && <Playtime>{'Playtime: '}{game.playtime}{' h'}</Playtime>}
+        </Row>
+        {game.description_raw && <AboutResume>{'About'}</AboutResume>}
+        <Row>
+          <ResumeBox onClick={()=> setShowAbout(!showAbout)}>
+            <Resume>{game.description_raw}</Resume>          
+          </ResumeBox>
+          <BoxVideo game={game}/>
+        </Row>
+        <Row>
+          <StoreWraper>
+            { game.stores && game.stores.map((item, index) => <LinkStore key={index} store={item.store} url={item.url} />) }
+          </StoreWraper>
+          <DivTeste>
+            {game.website && <LinkOfficial onClick={()=>window.open(game.website , "_blank")}>Official Website</LinkOfficial>}
+              {game.reddit_name && (
+                <Row onClick={()=> window.open(game.reddit_url , "_blank")}>
+                  <RedditIcon />
+                  <LinkReddit >{game.reddit_name}</LinkReddit>
+                </Row>
+              )}
+          </DivTeste>
+        </Row>
+        </BoxZ>
+        <ModalGame description={game.description_raw} showModal={showAbout} setShowAbout={setShowAbout}/>
+        </BoxResume>
+      }
+    </>
   );
 }
 

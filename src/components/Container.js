@@ -52,7 +52,8 @@ function Container() {
         setSearchTerm(event.target.value)
         setPage(1);
     }
-    const scrollToTop= ()=>{
+    const scrollToTop= (num)=>{
+        setPage(page + num)
         window.scroll({
             top:0,
             behavior:'smooth'
@@ -70,7 +71,7 @@ function Container() {
    },[page, searchTerm, selectedPlatform])
 
    if(selectedGame){
-       return <GameResume selectedGame={selectedGame}/>
+       return <GameResume selectedGame={selectedGame} setSelectedGame={setSelectedGame}/>
    }
 
 
@@ -90,9 +91,9 @@ function Container() {
               games.results && games.results.map((game, index) => <Game key={game.id} item={game} setSelectedGame={setSelectedGame} isLast={games.results.length - 1 === index} />)
           }
       </BigBox>
-      <SwitchBorder onClick={()=> scrollToTop()}>
-         { games.previous ? <SwitchPages onClick={() => setPage(page - 1)} reverse={true}/> : <div /> }
-         { games.next ? <SwitchPages onClick={() => setPage(page + 1)} reverse={false}/> : <div /> }
+      <SwitchBorder>
+         { games.previous ? <SwitchPages onClick={() => scrollToTop(- 1)} reverse={true} /> : <div /> }
+         { games.next ? <SwitchPages onClick={() => scrollToTop(1)} reverse={false}/> : <div /> }
       </SwitchBorder>
     </>
   )
